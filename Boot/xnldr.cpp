@@ -39,6 +39,7 @@
 #include "physm.h"
 #include "paging.h"
 #include "lowlevel.h"
+#include "elf.h"
 
 /* global variable */
 EFI_HANDLE   gImageHandle;
@@ -220,7 +221,7 @@ UINTN XESetGraphicsMode(EFI_SYSTEM_TABLE* SystemTable, int index) {
  * @param ImageHandle -- System parameter
  * @param SystemTable -- System parameter
  */
-EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
+extern "C" EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
 	EFI_STATUS Status;
 
 	Status = XEInitialiseLib(ImageHandle, SystemTable);
@@ -237,17 +238,32 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
 
 	/* load all important files */
 	XEFile* krnl = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\EFI\\XENEVA\\xnkrnl.exe");
+    if (!krnl) {
+        // Fallback to ELF extension if EXE not found (or just try generic naming later)
+        krnl = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\EFI\\XENEVA\\xnkrnl.elf");
+    }
+
 	XEFile* kfont = XEOpenAndReadFile(ImageHandle,(CHAR16*)L"\\EFI\\XENEVA\\font.psf");
 	XEFile* kApCode = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\EFI\\XENEVA\\ap.bin");
 	XEFile* kAhci = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\ahci.dll");
 	XEFile* kNvme = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\nvme.dll");
 	//XEFile* kXHCI = XEOpenAndReadFile(ImageHandle, (CHAR16*)L"\\xhci.dll");
 	
+	
+    void* entry = nullptr;
+    void* base = nullptr;
 
-	uint8_t* allignedKernelBuffer = (uint8_t*)krnl->kBuffer;
-	IMAGE_DOS_HEADER* dos_header = (IMAGE_DOS_HEADER*)allignedKernelBuffer;
-	IMAGE_NT_HEADERS* nt_header = (IMAGE_NT_HEADERS*)(allignedKernelBuffer + dos_header->e_lfanew);
-	VOID* entry = (VOID*)(nt_header->OptionalHeader.ImageBase + nt_header->OptionalHeader.AddressOfEntryPoint);
+    // Detect File Type
+    uint8_t* magic = (uint8_t*)krnl->kBuffer;
+    if (magic[0] == 0x7F && magic[1] == 'E' && magic[2] == 'L' && magic[3] == 'F') {
+        XEGuiPrint("Detected ELF Kernel...\n");
+        base = XELFLoadImage(krnl->kBuffer);
+        entry = (void*)XELFGetEntryPoint(krnl->kBuffer);
+    } else {
+        XEGuiPrint("Detected PE Kernel...\n");
+        base = XEPELoadImage(krnl->kBuffer);
+	    entry = (void*)XEPEGetEntryPoint(krnl->kBuffer);
+    }
 
 	XEGuiPrint("System files loaded successfully \n");
 	EFI_CONFIGURATION_TABLE* configuration_tables = gSystemTable->ConfigurationTable;
@@ -282,9 +298,8 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
 	map.MapKey = map.DescriptorSize = map.DescriptorVersion = 0;
 	map.memmap = 0;
 	Status = gSystemTable->BootServices->GetMemoryMap(&map.MemMapSize, nullptr, &map.MapKey, &map.DescriptorSize, &map.DescriptorVersion);
-	if (Status == EFI_BUFFER_TOO_SMALL) {
-		XEGuiPrint("Failed memory map! Buffer to small \n");
-		XEGuiPrint("Required buffer -> %d bytes\n", map.MemMapSize);
+	if (Status != EFI_BUFFER_TOO_SMALL && Status != EFI_SUCCESS) {
+		XEGuiPrint("EFI_Memory_Map failed to get size!! status %d\n", Status);
 	}
 	else if (Status == EFI_INVALID_PARAMETER) 
 		XEGuiPrint("EFI_Memory_Map failed!!, invalid parameter \n");
@@ -315,10 +330,6 @@ EFI_STATUS efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) {
 
 	/* initilise paging */
 	XEInitialisePaging();
-
-
-	void* base = XEPELoadImage(krnl->kBuffer);
-	XEImageEntry kentry = (XEImageEntry)XEPEGetEntryPoint(krnl->kBuffer);
 
 
 	uint64_t ahciAddr = XEPELoadDLLImage(kAhci->kBuffer);

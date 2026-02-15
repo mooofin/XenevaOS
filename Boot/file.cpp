@@ -30,8 +30,8 @@
 #include "file.h"
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/LoadFile.h>
-#include <Protocol\LoadedImage.h>
-#include <Guid\FileInfo.h>
+#include <Protocol/LoadedImage.h>
+#include <Guid/FileInfo.h>
 
 EFI_GUID FileSystemProtocol = {
 	0x964E5B22,

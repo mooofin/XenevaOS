@@ -155,7 +155,7 @@
 #include <aurora.h>
 #include <string.h>
 #include <va_list.h>
-#include <Hal\hal.h>
+#include <Hal/hal.h>
 
 #define OS_DLL_FUNC AU_FUNC
 //#define ACPI_USE_STANDARD_HEADERS
@@ -214,10 +214,14 @@ extern OS_DLL_FUNC int AcpiOsReleaseGlobalLock(uint32_t *lock);
         (Acq) = AcpiOsReleaseGlobalLock(&((GLptr)->GlobalLock));    \
 } while (0)
 
+#if defined(_MSC_VER)
 #ifdef ACPICA_DLL
 #define ACPICA_FUNC __declspec(dllexport)
 #else
 #define ACPICA_FUNC __declspec(dllimport)
+#endif
+#else
+#define ACPICA_FUNC
 #endif
 
 #define ACPI_API_FUNCTION ACPICA_FUNC

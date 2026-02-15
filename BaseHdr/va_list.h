@@ -46,18 +46,32 @@ extern "C"
 #endif
 
 
+#ifndef STACKITEM
+#ifdef ARCH_X64
+#define STACKITEM int64_t
+#else
 #define STACKITEM int
+#endif
+#endif
 
+#ifndef VA_SIZE
 #define VA_SIZE(TYPE)   \
 	((sizeof(TYPE)+sizeof(STACKITEM)-1) \
 	& ~(sizeof(STACKITEM)-1))
+#endif
 
+#ifndef va_start
 #define va_start(AP, LASTARG) \
 	(AP = ((_va_list_)&(LASTARG)+VA_SIZE(LASTARG)))
+#endif
 
+#ifndef va_end
 #define va_end(AP)
+#endif
 
+#ifndef va_arg
 #define va_arg(AP, TYPE)  \
 	(AP += VA_SIZE(TYPE), *((TYPE *)(AP - VA_SIZE(TYPE))))
+#endif
 
 #endif

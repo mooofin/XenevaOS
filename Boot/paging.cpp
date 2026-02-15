@@ -248,7 +248,8 @@ void XEInitialisePaging() {
 	size_t cr0 = read_cr0();
 	write_cr0(cr0 & (0xffffffff - (1 << 16)));
 
-	for (size_t x = (PAGESIZE / sizeof(PML4_ENTRY)); x > 0; --x){
+	for (size_t x = (PAGESIZE / sizeof(PML4_ENTRY)) - 1; x > 0; --x){
+		if (x - 1 == 511) continue; // Skip slot 511 to avoid collision with kernel
 		if ((pml4[x - 1] & PAGING_PRESENT) == 0){
 			pml4 = setPML4_recursive(pml4, x - 1);
 			break;
@@ -276,67 +277,61 @@ bool XEPagingMap_(void* vaddr, paddr_t paddr, size_t attributes){
 	size_t flags = PAGING_PRESENT | PAGING_WRITABLE | attributes;
 
 	PML4_ENTRY* pml4 = (PML4_ENTRY*)getPML4(vaddr);
-	PDPT_ENTRY* pdpt = getPDPT(vaddr);
-	PD_ENTRY* pdir = getPD(vaddr);
-	PTAB_ENTRY* ptab = getPTAB(vaddr);
-
 	PML4_ENTRY& pml4ent = pml4[getPML4index(vaddr)];
 	if ((pml4ent & PAGING_PRESENT) == 0) {
-
 		paddr_t addr = XEPmmngrAllocate();
 		if (addr == 0)
-		{
 			return false;
-		}
 		pml4ent = addr | flags;
-		tlbflush(pdpt);
+		tlbflush(getPDPT(vaddr));
 		memory_barrier();
-		clear_ptabs(pdpt);
+		clear_ptabs(getPDPT(vaddr));
 	}
 	else if (pml4ent & PAGING_SIZEBIT) {
 		return false;
 	}
+
+	PDPT_ENTRY* pdpt = getPDPT(vaddr);
 	PDPT_ENTRY& pdptent = pdpt[getPDPTindex(vaddr)];
 	if ((pdptent & PAGING_PRESENT) == 0)
 	{
 		paddr_t addr = XEPmmngrAllocate();
 		if (addr == 0)
-		{
 			return false;
-		}
-		pdptent = addr | flags; //PAGING_PRESENT | PAGING_WRITABLE; 
-		tlbflush(pdir);
+		pdptent = addr | flags;
+		tlbflush(getPD(vaddr));
 		memory_barrier();
-		clear_ptabs(pdir);
+		clear_ptabs(getPD(vaddr));
 	}
 	else if (pdptent & PAGING_SIZEBIT)
 		return false;
+
+	PD_ENTRY* pdir = getPD(vaddr);
 	PD_ENTRY& pdent = pdir[getPDindex(vaddr)];
 	if ((pdent & PAGING_PRESENT) == 0)
 	{
 		paddr_t addr = XEPmmngrAllocate();
 		if (addr == 0)
-		{
 			return false;
-		}
-		pdent = addr | flags; // PAGING_PRESENT | PAGING_WRITABLE; 
-		tlbflush(ptab);
+		pdent = addr | flags;
+		tlbflush(getPTAB(vaddr));
 		memory_barrier();
-		clear_ptabs(ptab);
+		clear_ptabs(getPTAB(vaddr));
 	}
 	else if (pdent & PAGING_SIZEBIT)
 		return false;
+
+	PTAB_ENTRY* ptab = getPTAB(vaddr);
 	PTAB_ENTRY& ptabent = ptab[getPTABindex(vaddr)];
 	if ((ptabent & PAGING_PRESENT) != 0)
 		return false;
+
 	if (paddr == PADDR_T_MAX)
 	{
 		if (!(paddr = XEPmmngrAllocate()))
 			return false;
 	}
-	ptabent = (size_t)paddr | flags; //PAGING_PRESENT; 
-	/*if (attributes & PAGE_ATTRIBUTE_WRITABLE)
-		ptabent |= PAGING_WRITABLE;*/
+	ptabent = (size_t)paddr | flags;
 	tlbflush(vaddr);
 	memory_barrier();
 	return true;
@@ -380,8 +375,10 @@ bool check_free(int level, void* start_addr, void* end_addr){
  */
 bool XEPagingMap(void* vaddr, paddr_t paddr, size_t length, size_t attributes) {
 
-	if (!check_free(vaddr, length)) 
+	if (!check_free(vaddr, length)) {
+		XEGuiPrint("Paging: Range %x - %x is NOT free!\n", vaddr, (size_t)vaddr + length);
 		return false;
+	}
 	
 	size_t vptr = (size_t)vaddr;
 	size_t pgoffset = vptr & (PAGESIZE - 1);

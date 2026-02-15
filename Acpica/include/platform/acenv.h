@@ -291,7 +291,10 @@
 
 #endif
 
-#if defined(_LINUX) || defined(__linux__)
+#if defined(AUXENEVA)
+#include "acxeneva.h"
+
+#elif defined(_LINUX) || defined(__linux__)
 #include "aclinux.h"
 
 #elif defined(_APPLE) || defined(__APPLE__)
@@ -344,13 +347,6 @@
 #elif defined(_AED_EFI) || defined(_GNU_EFI) || defined(_EDK2_EFI)
 #include "acefi.h"
 
-#elif defined(AUXENEVA)
-#include "acxeneva.h"
-#else
-
-/* Unknown environment */
-
-#error Unknown target environment
 #endif
 
 /*! [End] no source code translation !*/

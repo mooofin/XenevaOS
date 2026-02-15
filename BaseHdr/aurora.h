@@ -35,8 +35,15 @@
 #include <stdint.h>
 
 
+#if defined(_MSC_VER)
 #define AU_EXPORT  __declspec(dllexport)
 #define AU_IMPORT  __declspec(dllimport)
+#define AU_ALIGN(x) __declspec(align(x))
+#else
+#define AU_EXPORT
+#define AU_IMPORT
+#define AU_ALIGN(x) __attribute__((aligned(x)))
+#endif
 
 #ifdef __AU_KERNEL__
 #define AU_FUNC AU_EXPORT

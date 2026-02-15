@@ -29,11 +29,11 @@
 
 #include <aurora.h>
 #include <string.h>
-#include <Mm\pmmngr.h>
-#include <Mm\vmmngr.h>
-#include <Mm\liballoc\liballoc.h>
+#include <Mm/pmmngr.h>
+#include <Mm/vmmngr.h>
+#include <Mm/liballoc/liballoc.h>
 #include <_null.h>
-#include <Hal\serial.h>
+#include <Hal/serial.h>
 
 /**  Durand's Ridiculously Amazing Super Duper Memory functions.  */
 
@@ -569,7 +569,7 @@ int liballoc_unlock() {
 
 void* liballoc_alloc(int pages) {
 	size_t size = static_cast<size_t>(pages) * 4096;
-	uint64_t* page = AuGetFreePage(0, false);
+	uint64_t* page = AuGetFreePage(0, NULL);
 	uint64_t page_ = (uint64_t)page;
 
 	for (size_t i = 0; i < pages; i++) {

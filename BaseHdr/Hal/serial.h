@@ -45,6 +45,6 @@ extern void AuInitialiseSerial();
 * SeTextOut -- Serial Text Out
 * @param format -- text to out
 */
-AU_EXTERN AU_EXPORT void SeTextOut(char* format, ...);
+AU_EXTERN AU_EXPORT void SeTextOut(const char* format, ...);
 
 #endif

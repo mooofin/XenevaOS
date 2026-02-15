@@ -37,8 +37,8 @@
 #include <aucon.h>
 #include <Sync/spinlock.h>
 #include <Hal/x86_64_lowlevel.h>
-#include <Hal\serial.h>
-#include <Fs\vfs.h>
+#include <Hal/serial.h>
+#include <Fs/vfs.h>
 
 #ifndef _USE_LIBALLOC
 static meta_data_t *first_block;
@@ -420,7 +420,7 @@ void* kcalloc(size_t n_item, size_t size) {
 * @param pages -- number of pages needs to be mapped
 */
 void* au_request_page(int pages) {
-	uint64_t* page = AuGetFreePage(0, false);
+	uint64_t* page = AuGetFreePage(0, NULL);
 	uint64_t page_ = (uint64_t)page;
 	
 	for (size_t i = 0; i < pages; i++) {

@@ -34,7 +34,7 @@
 #include <Fs/vfs.h>
 
 #pragma pack(push,1)
-__declspec(align(2))
+AU_ALIGN(2)
 typedef struct _icmp_head_ {
 	unsigned char type;
 	unsigned char code;

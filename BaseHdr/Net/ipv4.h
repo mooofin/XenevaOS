@@ -31,7 +31,7 @@
 #define __IPV4_H__
 
 #pragma pack(push,1)
-__declspec(align(2))
+AU_ALIGN(2)
 typedef struct _ipv4head_ {
 	unsigned char versionHeaderLen;
 	unsigned char typeOfService;

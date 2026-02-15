@@ -30,21 +30,21 @@
 #include <stdint.h>
 #include <_null.h>
 #include <aucon.h>
-#include <Hal\x86_64_sched.h>
-#include <Hal\x86_64_hal.h>
+#include <Hal/x86_64_sched.h>
+#include <Hal/x86_64_hal.h>
 #include <loader.h>
-#include <Mm\vmmngr.h>
+#include <Mm/vmmngr.h>
 #include <process.h>
-#include <Hal\serial.h>
-#include <Sync\mutex.h>
-#include <Hal\x86_64_signal.h>
+#include <Hal/serial.h>
+#include <Sync/mutex.h>
+#include <Hal/x86_64_signal.h>
 #include <Serv/sysserv.h>
 #include <ftmngr.h>
-#include <Fs\tty.h>
-#include <Fs\pipe.h>
-#include <Mm\mmap.h>
-#include <net\socket.h>
-#include <Fs\vdisk.h>
+#include <Fs/tty.h>
+#include <Fs/pipe.h>
+#include <Mm/mmap.h>
+#include <net/socket.h>
+#include <Fs/vdisk.h>
 
 /* Syscall function format */
 typedef int64_t(*syscall_func) (int64_t param1, int64_t param2, int64_t param3, int64_t
@@ -72,64 +72,64 @@ uint64_t null_call(int64_t param1, int64_t param2, int64_t param3, int64_t
 
 /* syscall entries */
 static void* syscalls[AURORA_MAX_SYSCALL] = {
-	null_call,        //0
-	SeTextOut,       //1
-	PauseThread,      //2
-	GetThreadID,      //3
-	GetProcessID,     //4
-	ProcessExit,      //5
-	ProcessWaitForTermination, //6
-	CreateProcess,    //7
-	ProcessLoadExec,  //8
-	CreateSharedMem,  //9
-	ObtainSharedMem,  //10
-	UnmapSharedMem,   //11
-	OpenFile,         //12
-	CreateMemMapping, //13
-	UnmapMemMapping,  //14
-	GetProcessHeapMem, //15
-	ReadFile,         //16
-	WriteFile,        //17
-	CreateDir,        //18
-	RemoveFile,       //19
-	CloseFile,        //20
-	FileIoControl,    //21
-	FileStat,         //22
-	ProcessSleep,     //23
-	SignalReturn,     //24
-	SetSignal,        //25
-	GetSystemTimerTick, //26
-	AuFTMngrGetFontID, //27
-	AuFTMngrGetNumFonts, //28
-	AuFTMngrGetFontSize, //29
-	MemMapDirty, //30
-	AuTTYCreate, //31
-	CreateUserThread, //32
-	SetFileToProcess, //33
-	ProcessHeapUnmap, //34
-	SendSignal, //35
-	GetCurrentTime, //36
-	OpenDir, //37
-	ReadDir, //38
-	CreateTimer, //39
-	StartTimer, //40
-	StopTimer,  //41
-	DestroyTimer, //42
-	ProcessGetFileDesc, //43
-	FileSetOffset, //44
-	GetTimeOfDay, //45
-	AuCreateSocket, //46
-	NetConnect, //47
-	NetSend, //48
-	NetReceive, //49
-	AuSocketSetOpt, //50
-	NetBind, //51
-	NetAccept, //52
-	NetListen, //53
-	AuCreatePipe, //54
-	AuGetVDiskInfo, //55
-	AuGetVDiskPartitionInfo, //56
-	GetEnvironmenBlock, //57
+	(void*)null_call,        //0
+	(void*)SeTextOut,       //1
+	(void*)PauseThread,      //2
+	(void*)GetThreadID,      //3
+	(void*)GetProcessID,     //4
+	(void*)ProcessExit,      //5
+	(void*)ProcessWaitForTermination, //6
+	(void*)CreateProcess,    //7
+	(void*)ProcessLoadExec,  //8
+	(void*)CreateSharedMem,  //9
+	(void*)ObtainSharedMem,  //10
+	(void*)UnmapSharedMem,   //11
+	(void*)OpenFile,         //12
+	(void*)CreateMemMapping, //13
+	(void*)UnmapMemMapping,  //14
+	(void*)GetProcessHeapMem, //15
+	(void*)ReadFile,         //16
+	(void*)WriteFile,        //17
+	(void*)CreateDir,        //18
+	(void*)RemoveFile,       //19
+	(void*)CloseFile,        //20
+	(void*)FileIoControl,    //21
+	(void*)FileStat,         //22
+	(void*)ProcessSleep,     //23
+	(void*)SignalReturn,     //24
+	(void*)SetSignal,        //25
+	(void*)GetSystemTimerTick, //26
+	(void*)AuFTMngrGetFontID, //27
+	(void*)AuFTMngrGetNumFonts, //28
+	(void*)AuFTMngrGetFontSize, //29
+	(void*)MemMapDirty, //30
+	(void*)AuTTYCreate, //31
+	(void*)CreateUserThread, //32
+	(void*)SetFileToProcess, //33
+	(void*)ProcessHeapUnmap, //34
+	(void*)SendSignal, //35
+	(void*)GetCurrentTime, //36
+	(void*)OpenDir, //37
+	(void*)ReadDir, //38
+	(void*)CreateTimer, //39
+	(void*)StartTimer, //40
+	(void*)StopTimer,  //41
+	(void*)DestroyTimer, //42
+	(void*)ProcessGetFileDesc, //43
+	(void*)FileSetOffset, //44
+	(void*)GetTimeOfDay, //45
+	(void*)AuCreateSocket, //46
+	(void*)NetConnect, //47
+	(void*)NetSend, //48
+	(void*)NetReceive, //49
+	(void*)AuSocketSetOpt, //50
+	(void*)NetBind, //51
+	(void*)NetAccept, //52
+	(void*)NetListen, //53
+	(void*)AuCreatePipe, //54
+	(void*)AuGetVDiskInfo, //55
+	(void*)AuGetVDiskPartitionInfo, //56
+	(void*)GetEnvironmenBlock, //57
 };
 
 //! System Call Handler Functions

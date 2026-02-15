@@ -27,14 +27,14 @@
 *
 **/
 
-#include <Hal\x86_64_signal.h>
-#include <Hal\x86_64_gdt.h>
-#include <Mm\kmalloc.h>
-#include <Mm\vmmngr.h>
-#include <Mm\pmmngr.h>
+#include <Hal/x86_64_signal.h>
+#include <Hal/x86_64_gdt.h>
+#include <Mm/kmalloc.h>
+#include <Mm/vmmngr.h>
+#include <Mm/pmmngr.h>
 #include <string.h>
 #include <aucon.h>
-#include <Hal\serial.h>
+#include <Hal/serial.h>
 #include <_null.h>
 
 extern "C" void SigRet();
@@ -116,7 +116,7 @@ void AuPrepareSignal(AuThread* thr, interrupt_stack_frame* frame, Signal* signal
 	uint64_t* rsp_ = (uint64_t*)rsp_val;
 	for (int i = 0; i < 2; i++)
 		AuMapPage((uint64_t)AuPmmngrAlloc(), 0x700000 + i * 4096, X86_64_PAGING_USER);
-	memcpy((void*)0x700000, &SigRet, 8192);
+	memcpy((void*)0x700000, (void*)SigRet, 8192);
 	*rsp_ = 0x700000;
 
 	thr->frame.rbp = (uint64_t)rsp_;

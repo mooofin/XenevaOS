@@ -34,9 +34,9 @@
 #include <stdarg.h>
 #include <aurora.h>
 #ifdef ARCH_X64
-#include <Hal\x86_64_signal.h>
+#include <Hal/x86_64_signal.h>
 #endif
-#include <Net\socket.h>
+#include <Net/socket.h>
 
 /* maximum supported system calls */
 #define AURORA_MAX_SYSCALL  58

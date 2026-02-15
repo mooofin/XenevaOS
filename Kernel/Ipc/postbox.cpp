@@ -27,17 +27,17 @@
 *
 **/
 
-#include <Ipc\postbox.h>
-#include <Mm\kmalloc.h>
-#include <Mm\pmmngr.h>
-#include <Mm\vmmngr.h>
+#include <Ipc/postbox.h>
+#include <Mm/kmalloc.h>
+#include <Mm/pmmngr.h>
+#include <Mm/vmmngr.h>
 #include <string.h>
 #include <_null.h>
-#include <Hal\x86_64_sched.h>
-#include <Fs\vfs.h>
-#include <Fs\dev\devfs.h>
-#include <Hal\x86_64_hal.h>
-#include <Hal\serial.h>
+#include <Hal/x86_64_sched.h>
+#include <Fs/vfs.h>
+#include <Fs/dev/devfs.h>
+#include <Hal/x86_64_hal.h>
+#include <Hal/serial.h>
 
 /*
  * NOTE: PostBoxIPCManager is aurora's main communication manager between

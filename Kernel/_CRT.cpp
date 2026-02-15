@@ -29,22 +29,46 @@
 **/
 
 
+
 #include <stdint.h>
+#include <compiler.h>
+#include <Mm/kmalloc.h>
 
+#ifdef COMPILER_MSVC
 extern "C" int _fltused = 1;
+#endif
 
-void* __cdecl ::operator new(size_t size){
-	return 0; // malloc(size);
+void* operator new(size_t size) throw() {
+	return kmalloc(size);
 }
 
-void* __cdecl ::operator new[](size_t size) {
-	return 0; // malloc(size);
+void* operator new[](size_t size) throw() {
+	return kmalloc(size);
 }
 
-void __cdecl ::operator delete (void* p) {
-	//free(p);
+void operator delete (void* p) {
+	kfree(p);
 }
 
-void __cdecl ::operator delete(void* p, uint64_t s) {
+void operator delete(void* p, size_t s) {
+	kfree(p);
 }
 
+void operator delete[](void* p) {
+	kfree(p);
+}
+
+void operator delete[](void* p, size_t s) {
+	kfree(p);
+}
+extern "C" int __cxa_guard_acquire(int64_t *g) {
+	if (*(char *)g) return 0;
+	return 1;
+}
+
+extern "C" void __cxa_guard_release(int64_t *g) {
+	*(char *)g = 1;
+}
+
+extern "C" void __cxa_guard_abort(int64_t *g) {
+}

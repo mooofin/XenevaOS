@@ -217,6 +217,11 @@ void page_fault(size_t vector, void* param){
 
 
 	AuThread* thr = AuGetCurrentThread();
+	AuProcess *proc = NULL;
+	uint64_t vaddr_ = (uint64_t)vaddr;
+	uint64_t vaddr_aligned = VIRT_ADDR_ALIGN(vaddr_);
+	AuVMArea* vma = NULL;
+	bool _mapped = false;
 	
 	/* check for signal */
 	if (!thr) {
@@ -236,7 +241,7 @@ void page_fault(size_t vector, void* param){
 		return;
 	}
 
-	AuProcess *proc = NULL;
+
 	if (thr) {
 		proc = AuProcessFindThread(thr);
 		if (!proc)
@@ -251,9 +256,7 @@ void page_fault(size_t vector, void* param){
 	
 skip:
 	panic("Page Fault !! \r\n");
-	uint64_t vaddr_ = (uint64_t)vaddr;
-	uint64_t vaddr_aligned = VIRT_ADDR_ALIGN(vaddr_);
-	bool _mapped = false;
+
 	if (present) {
 		SeTextOut("Page Not Present \r\n");
 	}
@@ -269,7 +272,7 @@ skip:
 	else if (id)
 		SeTextOut("Invalid page \r\n");
 
-	AuVMArea* vma = NULL;
+
 	if (proc)
 		vma = AuVMAreaGet(proc, frame->rip);
 

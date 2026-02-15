@@ -33,7 +33,7 @@
 
 #include <stdint.h>
 #include <circbuf.h>
-#include <Hal\x86_64_sched.h>
+#include <Hal/x86_64_sched.h>
 #include <aurora.h>
 
 #pragma pack(push,1)

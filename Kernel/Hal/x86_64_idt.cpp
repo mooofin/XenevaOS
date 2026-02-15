@@ -40,7 +40,7 @@
 //=====================================================================
 static void(*interrupts_handlers[256])(size_t, void*);
 
-extern "C" extern void* default_irq_handlers[];
+extern "C" void* default_irq_handlers[];
 
 static void register_irq(IDT* entry, void* function)
 {

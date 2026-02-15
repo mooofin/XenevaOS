@@ -111,6 +111,8 @@ void PS2MouseHandler(size_t v, void* p) {
 	uint8_t status = x64_inportb(MOUSE_STATUS);
 	while ((status & MOUSE_BBIT) && (status & MOUSE_F_BIT)) {
 		int8_t mouse_in = x64_inportb(MOUSE_PORT);
+		int x, y;
+		AuInputMessage newmsg;
 		switch (__ps2mouse->mouse_cycle) {
 		case 0:
 			__ps2mouse->mouse_byte[0] = mouse_in;
@@ -141,8 +143,8 @@ void PS2MouseHandler(size_t v, void* p) {
 	finish_packet:
 		__ps2mouse->mouse_cycle = 0;
 
-		int x = __ps2mouse->mouse_byte[1];
-		int y = __ps2mouse->mouse_byte[2];
+		x = __ps2mouse->mouse_byte[1];
+		y = __ps2mouse->mouse_byte[2];
 		if (x && __ps2mouse->mouse_byte[0] & (1 << 4))
 			x = x - 0x100;
 
@@ -188,7 +190,6 @@ void PS2MouseHandler(size_t v, void* p) {
 		}
 
 
-		AuInputMessage newmsg;
 		memset(&newmsg, 0, sizeof(AuInputMessage));
 		newmsg.type = AU_INPUT_MOUSE;
 		newmsg.xpos = __ps2mouse->mouse_x;

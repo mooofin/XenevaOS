@@ -431,12 +431,14 @@ extern "C" uint64_t x64_get_rsp();
 void x8664SchedulerISR(size_t v, void* param) {
 	x64_cli();
 	interrupt_stack_frame *frame = (interrupt_stack_frame*)param;
+	TSS *ktss = NULL;
+	AuThread* current_thread = NULL;
+
 	if (_x86_64_sched_enable == false)
 		goto sched_end;
 	
-	TSS *ktss = AuPerCPUGetKernelTSS();
-
-	AuThread* current_thread = AuPerCPUGetCurrentThread();
+	ktss = AuPerCPUGetKernelTSS();
+	current_thread = AuPerCPUGetCurrentThread();
 	
 	if (save_context(current_thread, ktss) == 0) {
 		current_thread->frame.cr3 = x64_read_cr3();

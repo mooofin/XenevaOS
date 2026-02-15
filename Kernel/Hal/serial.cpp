@@ -29,8 +29,8 @@
 
 #include <Hal/serial.h>
 #include <aucon.h>
-#include <Hal\hal.h>
-#include <Hal\x86_64_hal.h>
+#include <Hal/hal.h>
+#include <Hal/x86_64_hal.h>
 #include <stdio.h>
 
 /*
@@ -69,7 +69,7 @@ void WriteSerial(char a) {
 	x64_outportb(SERIAL_PORT, a);
 }
 
-void DebugSerial(char* string) {
+void DebugSerial(const char* string) {
 	for (int i = 0; i < strlen(string); i++)
 		WriteSerial(string[i]);
 }
@@ -78,7 +78,7 @@ void DebugSerial(char* string) {
  * SeTextOut -- Serial Text Out
  * @param format -- text to out
  */
-AU_EXTERN AU_EXPORT void SeTextOut(char* format, ...) {
+AU_EXTERN AU_EXPORT void SeTextOut(const char* format, ...) {
 
 	_va_list_ args;
 	va_start(args, format);

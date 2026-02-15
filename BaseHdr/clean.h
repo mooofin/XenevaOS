@@ -31,7 +31,7 @@
 #define __CLEAN_H__
 
 #include <process.h>
-#include <Hal\x86_64_sched.h>
+#include <Hal/x86_64_sched.h>
 #include <stdint.h>
 
 

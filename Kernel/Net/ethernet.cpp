@@ -27,27 +27,26 @@
 *
 **/
 
-#include <Net\ethernet.h>
-#include <Net\aunet.h>
-#include <Mm\kmalloc.h>
+#include <Net/ethernet.h>
+#include <Net/aunet.h>
+#include <Mm/kmalloc.h>
 #include <string.h>
-#include <Hal\serial.h>
-#include <Fs\Dev\devfs.h>
+#include <Hal/serial.h>
+#include <Fs/Dev/devfs.h>
 #include <aucon.h>
 #include <Net/arp.h>
-#include <Net\ipv4.h>
+#include <Net/ipv4.h>
 #include <Net/ipv6.h>
 #include <Net/udp.h>
-#include <Net\socket.h>
+#include <Net/socket.h>
+#include <compiler.h>
 
-#pragma pack(push,1)
-__declspec(align(2)) typedef struct _ethernet_ {
+PACKED_STRUCT(Ethernet) {
 	uint8_t dest[6];
 	uint8_t src[6];
 	uint16_t typeLen;
 	uint8_t payload[];
-}Ethernet;
-#pragma pack(pop)
+} PACKED_END;
 
 
 AU_EXTERN AU_EXPORT void AuEthernetHandle(void *data, int size, AuVFSNode* nic) {
@@ -62,7 +61,7 @@ AU_EXTERN AU_EXPORT void AuEthernetHandle(void *data, int size, AuVFSNode* nic) 
 		AuSocketAdd(sock, frame, size);
 	}
 
-	char broadcast_mac[6] = { 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
+	uint8_t broadcast_mac[6] = { 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
 	if (!memcmp(frame->dest, ndev->mac, 6) || !memcmp(frame->dest, broadcast_mac, 6)) {
 		switch (ntohs(frame->typeLen)) {
 		case ETHERNET_TYPE_ARP:
@@ -80,9 +79,8 @@ AU_EXTERN AU_EXPORT void AuEthernetHandle(void *data, int size, AuVFSNode* nic) 
 	}
 }
 
-#pragma pack(push,1)
-__declspec(align(2))
-typedef struct _dns_ {
+
+PACKED_STRUCT(DNSPacket) {
 	uint16_t qid;
 	uint16_t flags;
 	uint16_t questions;
@@ -90,8 +88,7 @@ typedef struct _dns_ {
 	uint16_t authorities;
 	uint16_t additional;
 	uint8_t data[];
-}DNSPacket;
-#pragma pack(pop)
+} PACKED_END;
 /*
  * AuEthernetSend -- sends a packet to ethernet layer
  * @param data -- data to send
@@ -113,7 +110,7 @@ void AuEthernetSend(AuVFSNode* nic,void* data, size_t len, uint16_t type, uint8_
 	pacl->typeLen = htons(type);
 
 	if (nic->write) {
-		nic->write(nic, nic, (uint64_t*)pacl, totalSz);
+		nic->write(nic, nic, (uint64_t*)(void*)pacl, totalSz);
 	}
 	kfree(pacl);
 }

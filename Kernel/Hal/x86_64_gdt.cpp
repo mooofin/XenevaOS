@@ -30,6 +30,7 @@
 #include <Hal/x86_64_gdt.h>
 #include <Hal/x86_64_lowlevel.h>
 #include <aucon.h>
+#include <compiler.h>
 
 //! Global Descriptor Table functions
 extern "C" uint16_t x64_get_segment_register(size_t reg);
@@ -41,8 +42,8 @@ extern "C" void x64_ltr(uint16_t seg);
 
 //! Global Variables GDT
 static const size_t GDT_ENTRIES = GDT_ENTRY_MAX;
-__declspec(align(4)) static gdt_entry gdt[GDT_ENTRIES];
-__declspec(align(4)) static gdtr the_gdtr, old_gdtr;
+ALIGN(4) static gdt_entry gdt[GDT_ENTRIES];
+ALIGN(4) static gdtr the_gdtr, old_gdtr;
 static uint16_t oldsregs[8];
 
 static bool _fxsave = false;

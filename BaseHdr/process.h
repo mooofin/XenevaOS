@@ -32,11 +32,11 @@
 
 
 #include <stdint.h>
-#include <Fs\vfs.h>
+#include <Fs/vfs.h>
 #include <Hal/AA64/sched.h>
 #ifdef ARCH_X64
-#include <Hal\x86_64_sched.h>
-#include <Sync\mutex.h>
+#include <Hal/x86_64_sched.h>
+#include <Sync/mutex.h>
 #endif
 #include <list.h>
 

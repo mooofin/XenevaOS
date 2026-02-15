@@ -41,7 +41,7 @@
 #include <pe.h>
 #include <aurora.h>
 #include <acpi.h>
-#include <platform\acxeneva.h>
+#include <platform/acxeneva.h>
 
 #define ACPI_POWER_BUTTON_ENABLE (1<<8)
 #define ACPI_SCI_EN  (1<<0)
@@ -104,7 +104,7 @@ uint8_t* search_s5(acpiDsdt* header) {
 		if (*S5 == (uint32_t)'_5S_') {
 			return (uint8_t*)S5;
 		}
-		S5 = (uint32_t*)((uint32_t)S5 + 1);
+		S5 = (uint32_t*)((uintptr_t)S5 + 1);
 	}
 
 	return (uint8_t*)NULL;
@@ -161,7 +161,7 @@ void AuACPIInitialise(void* acpi_base) {
 	memset(__AuroraBasicAcpi, 0, sizeof(AuroraBasicACPI));
 	__ACPIRSDP = acpi_base;
 	acpiRsdp *rsdp = (acpiRsdp*)acpi_base;
-	acpiRsdt* rsdt = (acpiRsdt*)rsdp->rsdtAddr;
+	acpiRsdt* rsdt = (acpiRsdt*)(uintptr_t)rsdp->rsdtAddr;
 	acpiXsdt* xsdt = (acpiXsdt*)rsdp->xsdtAddr;
 	char sig[5];
 	int entries = (rsdt->header.length - sizeof(rsdt->header)) / 4;
@@ -169,7 +169,7 @@ void AuACPIInitialise(void* acpi_base) {
 	__PCIESupported = false;
 
 	for (int count = 0; count < entries; count++) {
-		header = (acpiSysDescHeader*)rsdt->entry[count];
+		header = (acpiSysDescHeader*)(uintptr_t)rsdt->entry[count];
 		strncpy(sig, header->signature, 4);
 		sig[4] = '\0';
 
@@ -204,10 +204,10 @@ void AuACPIInitialise(void* acpi_base) {
 	}
 
 	if (__AuroraBasicAcpi->fadt && __AuroraBasicAcpi->fadt->facsAddr) 
-		__AuroraBasicAcpi->facs = (acpiFacs*)__AuroraBasicAcpi->fadt->facsAddr;
+		__AuroraBasicAcpi->facs = (acpiFacs*)(uintptr_t)__AuroraBasicAcpi->fadt->facsAddr;
 
 	if (__AuroraBasicAcpi->fadt && __AuroraBasicAcpi->fadt->dsdtAddr) {
-		__AuroraBasicAcpi->dsdt = (acpiDsdt*)__AuroraBasicAcpi->fadt->dsdtAddr;
+		__AuroraBasicAcpi->dsdt = (acpiDsdt*)(uintptr_t)__AuroraBasicAcpi->fadt->dsdtAddr;
 		AuHalRegisterIRQ(__AuroraBasicAcpi->fadt->sciInt, AuFADTHandler, __AuroraBasicAcpi->fadt->sciInt, false);
 
 		uint8_t *S5Block = search_s5(__AuroraBasicAcpi->dsdt);
