@@ -33,10 +33,10 @@
 #include <Mm/kmalloc.h>
 #include <Mm/pmmngr.h>
 #include <Mm/vmmngr.h>
-#include <fs/vfs.h>
-#include <fs/dev/devfs.h>
+#include <Fs/vfs.h>
+#include <Fs/Dev/devfs.h>
 #include <aurora.h>
-#include <serv/sysserv.h>
+#include <Serv/sysserv.h>
 #include <string.h>
 #include <aucon.h>
 #include <Hal/serial.h>

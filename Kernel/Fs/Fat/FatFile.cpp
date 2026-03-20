@@ -34,7 +34,7 @@
 #include <Mm/pmmngr.h>
 #include <Mm/vmmngr.h>
 #include <string.h>
-#include <Hal/Serial.h>
+#include <Hal/serial.h>
 #include <_null.h>
 #include <aucon.h>
 

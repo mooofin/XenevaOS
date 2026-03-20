@@ -29,7 +29,7 @@
 
 #include <Fs/tty.h>
 #include <Fs/vfs.h>
-#include <Fs/dev/devfs.h>
+#include <Fs/Dev/devfs.h>
 #include <_null.h>
 #include <Mm/kmalloc.h>
 #include <string.h>

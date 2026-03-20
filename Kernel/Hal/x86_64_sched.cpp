@@ -29,7 +29,7 @@
 
 #include <Hal/x86_64_sched.h>
 #include <Hal/x86_64_hal.h>
-#include <Hal/Hal.h>
+#include <Hal/hal.h>
 #include <Hal/x86_64_cpu.h>
 #include <Hal/x86_64_lowlevel.h>
 #include <Hal/x86_64_signal.h>

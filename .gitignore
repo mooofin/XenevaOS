@@ -1,0 +1,26 @@
+# Build artifacts
+*.o
+*.elf
+*.efi
+*.dll
+*.img
+
+# CONTEXT.md (generated file)
+CONTEXT.md
+
+# Cache directory
+.codectx_cache/
+
+# Kernel build artifacts
+Kernel/**/*.o
+Kernel/xnkrnl.elf
+
+# Boot build artifacts
+Boot/**/*.o
+Boot/xnldr.efi
+
+# Disk images
+*.img
+xeneva.img
+ahci.dll
+nvme.dll

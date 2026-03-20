@@ -28,7 +28,7 @@
 **/
 
 #include <Hal/ioapic.h>
-#include <MM/vmmngr.h>
+#include <Mm/vmmngr.h>
 #include <Hal/x86_64_idt.h>
 #include <stdint.h>
 

@@ -37,7 +37,7 @@
 #include <Hal/x86_64_hal.h>
 #include <string.h>
 #include <stdio.h>
-#include <Fs/Fat/fat.h>
+#include <Fs/Fat/Fat.h>
 #include <Fs/Dev/devfs.h>
 
 AuVDisk *VdiskArray[MAX_VDISK_DEVICES];

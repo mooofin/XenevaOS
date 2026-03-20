@@ -27,7 +27,7 @@ run: all
 	mmd -i xeneva.img ::/EFI
 	mmd -i xeneva.img ::/EFI/BOOT
 	mmd -i xeneva.img ::/EFI/XENEVA
-	# Copy files (Assume mcopy is available)
+	
 	mcopy -i xeneva.img Boot/xnldr.efi ::/EFI/BOOT/BOOTX64.EFI
 	mcopy -i xeneva.img Kernel/xnkrnl.elf ::/EFI/XENEVA/xnkrnl.elf
 	mcopy -i xeneva.img Resources/resources/EFI/XENEVA/font.psf ::/EFI/XENEVA/font.psf
@@ -37,4 +37,8 @@ run: all
 	mcopy -i xeneva.img ahci.dll ::/ahci.dll
 	mcopy -i xeneva.img nvme.dll ::/nvme.dll
 	# Launch QEMU
-	qemu-system-x86_64 -bios /usr/share/ovmf/OVMF.fd -drive file=xeneva.img,format=raw -m 2G -serial stdio
+	qemu-system-x86_64 -bios /usr/share/edk2/x64/OVMF.4m.fd \
+		-drive file=xeneva.img,format=raw \
+		-m 2G \
+		-vga std \
+		-serial stdio

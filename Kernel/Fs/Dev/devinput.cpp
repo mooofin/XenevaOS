@@ -27,11 +27,11 @@
 *
 **/
 
-#include <Fs/dev/devinput.h>
+#include <Fs/Dev/devinput.h>
 #include <Fs/vfs.h>
 #include <Fs/pipe.h>
 #include <_null.h>
-#include <Fs/dev/devfs.h>
+#include <Fs/Dev/devfs.h>
 #include <string.h>
 #include <Mm/kmalloc.h>
 #include <aurora.h>

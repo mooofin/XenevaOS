@@ -35,7 +35,7 @@
 #include <_null.h>
 #include <Hal/x86_64_sched.h>
 #include <Fs/vfs.h>
-#include <Fs/dev/devfs.h>
+#include <Fs/Dev/devfs.h>
 #include <Hal/x86_64_hal.h>
 #include <Hal/serial.h>
 
